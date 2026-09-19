@@ -1,0 +1,42 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isProfessor() {
+      return request.auth != null && request.auth.token.email == 'professormaharaja@gmail.com';
+    }
+
+    function isValidSubmission(data) {
+      return data.keys().hasAll([
+        'studentName', 'classDepartment', 'collegeName',
+        'sessionFeedback', 'overallSatisfaction', 'starRating',
+        'resourcePersonScore', 'createdAt'
+      ]) &&
+      data.studentName is string && data.studentName.size() > 0 && data.studentName.size() < 200 &&
+      data.classDepartment is string && data.classDepartment.size() > 0 && data.classDepartment.size() < 200 &&
+      data.collegeName is string && data.collegeName.size() > 0 && data.collegeName.size() < 200 &&
+      data.sessionFeedback is string && data.sessionFeedback.size() > 0 && data.sessionFeedback.size() < 5000 &&
+      data.overallSatisfaction in ['Very Satisfied', 'Satisfied', 'Neutral', 'Dissatisfied'] &&
+      data.starRating is number && data.starRating >= 1 && data.starRating <= 5 &&
+      data.resourcePersonScore is number && data.resourcePersonScore >= 1 && data.resourcePersonScore <= 10 &&
+      data.createdAt is string;
+    }
+
+    match /feedback_submissions/{submissionId} {
+      // Anyone can submit feedback, but it must be valid
+      allow create: if isValidSubmission(request.resource.data);
+
+      // Only Professor Maharaja can read or delete submitted feedback
+      allow read, delete: if isProfessor();
+
+      // Updates are not permitted on submitted feedback
+      allow update: if false;
+    }
+
+    // Connection test document
+    match /test/{testId} {
+      allow read, write: if true;
+    }
+  }
+}

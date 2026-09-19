@@ -1,0 +1,69 @@
+{
+  "entities": {
+    "FeedbackSubmission": {
+      "title": "FeedbackSubmission",
+      "description": "Student feedback evaluation for Dr. M. Maharaja's session",
+      "type": "object",
+      "properties": {
+        "studentName": {
+          "type": "string",
+          "description": "Name of the student submitting feedback"
+        },
+        "classDepartment": {
+          "type": "string",
+          "description": "Class or department of the student"
+        },
+        "collegeName": {
+          "type": "string",
+          "description": "College or institution name"
+        },
+        "sessionFeedback": {
+          "type": "string",
+          "description": "Comprehensive evaluation of lecture quality, delivery, and content"
+        },
+        "overallSatisfaction": {
+          "type": "string",
+          "enum": ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied"],
+          "description": "Overall session satisfaction rating"
+        },
+        "areasOfImprovement": {
+          "type": "string",
+          "description": "Constructive critiques and areas of improvement"
+        },
+        "starRating": {
+          "type": "number",
+          "description": "Interactive star rating between 1 and 5"
+        },
+        "resourcePersonScore": {
+          "type": "number",
+          "description": "Numerical score between 1 and 10 evaluating the resource person"
+        },
+        "suggestions": {
+          "type": "string",
+          "description": "Open-ended suggestions and final thoughts"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when the feedback was submitted"
+        }
+      },
+      "required": [
+        "studentName",
+        "classDepartment",
+        "collegeName",
+        "sessionFeedback",
+        "overallSatisfaction",
+        "starRating",
+        "resourcePersonScore",
+        "createdAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/feedback_submissions/{submissionId}": {
+      "schema": "FeedbackSubmission",
+      "description": "Collection of all submitted student session evaluations"
+    }
+  }
+}
